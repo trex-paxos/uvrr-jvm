@@ -29,7 +29,7 @@ uvrr-jvm is a Java library implementing the Paxos consensus algorithm for distri
 | --- | --- |
 | Repository | https://github.com/trex-paxos/uvrr-jvm |
 | Maven groupId (root and all modules) | `uvrr-jvm` |
-| Modules | `uvrr-lib` (jar), `uvrr-paxe` (jar) |
+| Modules | `uvrr-lib` (jar), `uvrr-paxe` (jar), `uvrr-core` (jar) |
 | Version | `1.0-SNAPSHOT` |
 | Java release | 25, enforced with `-Werror` |
 
@@ -58,6 +58,7 @@ Two facts a future agent must not rediscover the hard way:
 uvrr-jvm/
 ├── uvrr-lib/           # Core Paxos algorithm implementation
 ├── uvrr-paxe/          # Optional encrypted UDP network protocol (PAXE)
+├── uvrr-core/          # uVRR protocol core, ported from the Rust uvrr-core
 ├── papers/             # Academic papers referenced in implementation
 ├── pom.xml             # Maven multi-module configuration
 └── README.md           # Detailed algorithm documentation
@@ -146,6 +147,7 @@ public static List<Result> filterValid(Stream<Record> records) {
 ## Module-Specific Documentation
 - **uvrr-lib/AGENTS.md**: Core Paxos algorithm implementation details
 - **uvrr-paxe/AGENTS.md**: PAXE encrypted UDP network protocol specification
+- **uvrr-core/AGENTS.md**: uVRR protocol core, its Rust source of truth, and its compliance duty
 
 For detailed algorithm explanation and implementation notes, see the comprehensive README.md.
 
@@ -166,8 +168,9 @@ All new Java files must include the following SPDX header at the top:
 
 ### File Linking (agents.md compatibility)
 This repository uses the agents.md format for documentation: `AGENTS.md` at the root, plus
-`uvrr-lib/AGENTS.md` and `uvrr-paxe/AGENTS.md` per module. There is no `.openhands/` tree; the
-`.gitignore` entry for it is not to be mistaken for a tracked mirror of this file.
+`uvrr-lib/AGENTS.md`, `uvrr-paxe/AGENTS.md` and `uvrr-core/AGENTS.md` per module. There is no
+`.openhands/` tree; the `.gitignore` entry for it is not to be mistaken for a tracked mirror of
+this file.
 
 ### Setup Development Environment
 ```bash
