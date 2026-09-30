@@ -30,7 +30,7 @@ At this the time:
 2. There are runtime checks that the algorithm is never violated.
 3. The library will mark itself as crashed if it spots problems such a journal write errors.
 4. There are junit tests that simulate randomized rolling network partitions 1,000 times.
-5. There is support for Flexible Paxos (FPaxos) quorum strategies.
+5. There is support for Flexible Paxos quorum strategies.
 
 This repository includes a low-overhead UDP based encrypted network protocol inspired by QUIC called [PAXE](./uvrr-paxe/README.md).
 This can be optionally be embedded into your application to perform the Paxos message enchanges.
@@ -458,7 +458,7 @@ to use your own node failure detection or election mechanism if you do not like 
 
 See the wiki for a more detailed explanation of this topic.
 
-## FPaxos "Flexible Paxos: Quorum intersection revisited"
+## Flexible Paxos: Quorum Intersection Revisited
 
 The paper [Flexible Paxos: Quorum intersection revisited](https://arxiv.org/pdf/1608.06696v1) describes a way to improve 
 the performance of Paxos by allowing the leader to accept values without waiting for a majority of responses. 
@@ -472,7 +472,7 @@ The two different quorums are validated to satisfy the safety property that
 $$|P|+|A|>N$$ where N is the total number of nodes, $$|P|$$ is the number of nodes that made promises, and $$|A|$$ is 
 the number of nodes that accepted values. 
 
-See [FPaxos](FPaxos.md) for more details. 
+See [Flexible Paxos](FlexiblePaxos.md) for more details. 
 
 ## UPaxos
 

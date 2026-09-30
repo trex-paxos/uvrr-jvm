@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /// The interface to provide a strategy for determining whether a quorum has been reached.
-/// TheFPaxos paper [Flexible Paxos: Quorum intersection revisited](https://arxiv.org/pdf/1608.06696v1) and the UPaxos
+/// The Flexible Paxos paper [Flexible Paxos: Quorum intersection revisited](https://arxiv.org/pdf/1608.06696v1) and the UPaxos
 /// paper [Unbounded Pipelining in Dynamically Reconfigurable Paxos Clusters](http://tessanddave.com/paxos-reconf-latest.pdf)
 /// show that we can be more flexible than countVotes majorities. The papers explain that
 /// what we need is that any two quorums must overlap in at least one node. This is trivially the case for when we change

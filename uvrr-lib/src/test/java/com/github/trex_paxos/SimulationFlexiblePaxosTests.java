@@ -23,7 +23,7 @@ import static com.github.trex_paxos.Simulation.inconsistentFixedIndex;
 import static com.github.trex_paxos.TrexLogger.LOGGER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SimulationFPaxosTests {
+public class SimulationFlexiblePaxosTests {
 
   @BeforeAll
   static void setupLogging() {
@@ -58,7 +58,7 @@ public class SimulationFPaxosTests {
     rootLogger.setUseParentHandlers(false);
   }
 
-  final QuorumStrategy fourNodesEvenNodeGambitFPaxos = new FlexiblePaxosQuorum(
+  final QuorumStrategy fourNodesEvenNodeGambitFlexiblePaxos = new FlexiblePaxosQuorum(
       Set.of(
           new VotingWeight((short) 1, 1),
           new VotingWeight((short) 2, 1),
@@ -87,7 +87,7 @@ public class SimulationFPaxosTests {
 
   public void testLeaderElection(RandomGenerator rng) {
     // given a repeatable test setup
-    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFPaxos);
+    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFlexiblePaxos);
 
     // we do a cold cluster start with no prior leader in the journals
     simulation.coldStart();
@@ -130,7 +130,7 @@ public class SimulationFPaxosTests {
 
   public void testClientWork(RandomGenerator rng) {
     // given a repeatable test setup
-    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFPaxos);
+    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFlexiblePaxos);
 
     // no code start rather we will make a leader
     makeLeader(simulation);
@@ -197,7 +197,7 @@ public class SimulationFPaxosTests {
   /// This returns the minimum command size of the three engines
   private int testWorkLossyNetwork(RandomGenerator rng) {
     // given a repeatable test setup
-    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFPaxos);
+    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFlexiblePaxos);
 
     // first force a leader as we have separate tests for leader election. This is a partitioned network test.
     makeLeader(simulation);
@@ -262,7 +262,7 @@ public class SimulationFPaxosTests {
 
   private int testWorkRotationNetworkPartition(RandomGenerator rng) {
     // given a repeatable test setup
-    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFPaxos);
+    final var simulation = new Simulation(rng, 30, fourNodesEvenNodeGambitFlexiblePaxos);
 
     // first force a leader as we have separate tests for leader election. This is a partitioned network test.
     makeLeader(simulation);
