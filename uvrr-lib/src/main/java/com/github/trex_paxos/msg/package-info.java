@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 - 2025 Simon Massey
+// SPDX-FileCopyrightText: 2024 - 2026 Simon Massey
 // SPDX-License-Identifier: Apache-2.0
 /// The msg package contains the core message types used in the Trex Paxos implementation.
 /// This package implements the core Paxos protocol as described in "Paxos Made Simple"
