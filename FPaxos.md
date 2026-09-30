@@ -12,7 +12,7 @@ The FPaxos paper has references to both quorum theory and experimental evidence 
 
 ## Detour: Handling Even Number of Nodes
 
-Just because it is inadvisable not to have an even number of nodes doesn't mean that it is impossible. A Paxos library such as TRex needs to handle the case where you have an even number of nodes. A cluster shouldn't lockup on a split vote in an even number of nodes. TRex treats a split-vote in an even number of nodes as a failed round. Failed rounds can only occur during a leader failure-over where two nodes are attempting to lead. Randomised timeouts with exponential back-off will eventually resolve any split vote. If you want to avoid them entirely just deploy an odd numbers of nodes. Alternatively, we can assign voting weights which sum to an odd number as documented in the UPaxos paper.
+Just because it is inadvisable not to have an even number of nodes doesn't mean that it is impossible. A Paxos library such as UVRR-JVM needs to handle the case where you have an even number of nodes. A cluster shouldn't lockup on a split vote in an even number of nodes. UVRR-JVM treats a split-vote in an even number of nodes as a failed round. Failed rounds can only occur during a leader failure-over where two nodes are attempting to lead. Randomised timeouts with exponential back-off will eventually resolve any split vote. If you want to avoid them entirely just deploy an odd numbers of nodes. Alternatively, we can assign voting weights which sum to an odd number as documented in the UPaxos paper.
 
 ## The Even Nodes Optimisation
 
@@ -22,7 +22,7 @@ It turns out that simple majorities are only one way of ensuring correctness. Ye
 
 What you need to ensure correctness is that a new leader must be guaranteed to see the highest accepted value of the previous leader. If I have four nodes, and two accepted the last value sent by a dead leader (the leader and one other), and the new leader obtains promises from three live nodes (everyone but the dead leader), then one of those promises will include the last value proposed by the previous leader. Putting the figures into the formula we see $$3 + 2 > 4$$ which confirms our reasoning.
 
-The fact that with even nodes you have to wait for one less accept response is an amazing discovery. It is also very simple to code. Adding it to the TRex Paxos library took only a couple of hours. Most of which was refactoring the code to make the quorums strategy pluggable.
+The fact that with even nodes you have to wait for one less accept response is an amazing discovery. It is also very simple to code. Adding it to the UVRR-JVM library took only a couple of hours. Most of which was refactoring the code to make the quorums strategy pluggable.
 
 The optimisation also means that a four node cluster is a little more resilient. If you split four nodes across two racks and the network partitions the racks your leader can still make progress. Only if the leader dies during the partition do you have a problem. Without the even nodes optimisation if the link between the two racks goes down the leader cannot process any client commands. With the optimisation only if the leader dies during the partition do you have a problem as a new leader cannot get a majority to when running the leader takeover phase. Neat.
 

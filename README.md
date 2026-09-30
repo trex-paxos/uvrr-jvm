@@ -1,4 +1,4 @@
-## Trex2: Paxos Algorithm Strong consistency for cluster replication on the Java JVM
+## UVRR-JVM: Paxos Algorithm Strong consistency for cluster replication on the Java JVM
 
 ### TL;DR
 
@@ -32,7 +32,7 @@ At this the time:
 4. There are junit tests that simulate randomized rolling network partitions 1,000 times.
 5. There is support for Flexible Paxos (FPaxos) quorum strategies.
 
-This repository includes a low-overhead UDP based encrypted network protocol inspired by QUIC called [PAXE](./trex-paxe/README.md).
+This repository includes a low-overhead UDP based encrypted network protocol inspired by QUIC called [PAXE](./uvrr-paxe/README.md).
 This can be optionally be embedded into your application to perform the Paxos message enchanges.
 
 See the Architecture section for a more detailed explanation of how to use the library.
@@ -240,13 +240,13 @@ Each node will then up-call the command value `V` to the host application.
 This implementation uses an equivalent technique to that described in Barbara Liskov and James Cowling,
 ["Viewstamped Replication Revisited"](https://pmg.csail.mit.edu/papers/vr-revisited.pdf) section 4.1 step 6:
 the current commit index is piggybacked on routine protocol messages, and the leader sends an explicit
-announcement when idle. Trex names these concepts `highestFixedIndex` and `Fixed` respectively; the
+announcement when idle. UVRR-JVM names these concepts `highestFixedIndex` and `Fixed` respectively; the
 [Cluster Replication With Paxos](https://simbo1905.wordpress.com/2014/10/28/transaction-log-replication-with-paxos/)
 blog post describes the same design using `commit(S,N)` terminology.
 
 The table below maps the VSR technique to this codebase:
 
-| VSR Revisited (§4.1) | Trex2 equivalent | Where |
+| VSR Revisited (§4.1) | UVRR-JVM equivalent | Where |
 |---|---|---|
 | Commit number piggybacked on `PREPARE` | `highestAcceptedIndex` on `PrepareResponse` | `PrepareResponse.java`, `TrexNode.processPrepareResponse` |
 | Commit number piggybacked on replication messages | `highestFixedIndex` on `AcceptResponse` | `AcceptResponse.java`, `TrexNode.ack` / `nack` |

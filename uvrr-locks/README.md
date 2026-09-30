@@ -4,7 +4,7 @@
 
 This codebase:
 
-* Implements distributed advisory locks (as distributed leases) using the Trex2 Paxos library.
+* Implements distributed advisory locks (as distributed leases) using the UVRR-JVM Paxos library.
 * Provides only a minimal subset of features compared
   to [The Chubby lock service](https://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf).
 * Provides a simple server where you run a cluster of where they all keep exactly in sync using only the Paxos

@@ -1,5 +1,5 @@
 
-# Trex-Lib: Core Paxos Algorithm
+# UVRR-Lib: Core Paxos Algorithm
 
 ## Overview
 Core implementation of the Paxos consensus algorithm with exhaustive property testing. Provides the fundamental building blocks for distributed consensus without network transport.

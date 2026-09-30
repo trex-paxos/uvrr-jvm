@@ -2,7 +2,7 @@
 
 ## Overview
 
-Paxe implements authenticated encryption for Trex Paxos messages using AES-256-GCM. Every cluster
+Paxe implements authenticated encryption for UVRR-JVM Paxos messages using AES-256-GCM. Every cluster
 member holds the same 32-byte pre-shared key (PSK) per epoch, installed out of band. PAXE is a
 protected intracluster datagram codec, not a key-agreement protocol.
 
@@ -90,4 +90,4 @@ Canonical prefix serialization, seal/open helpers, and tamper detection.
 ## Test support
 
 - `NetworkTestHarness` builds multi-node UDP test clusters with a shared cluster PSK.
-- `InMemoryNetwork` in `trex-lib` remains available for algorithm tests without PAXE.
+- `InMemoryNetwork` in `uvrr-lib` remains available for algorithm tests without PAXE.

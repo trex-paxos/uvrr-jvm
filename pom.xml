@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.trex-paxos</groupId>
-    <artifactId>trex</artifactId>
+    <groupId>uvrr-jvm</groupId>
+    <artifactId>uvrr-jvm</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>trex</name>
-    <url>https://github.com/trex-paxos/trex-paxos-jvm</url>
+    <name>uvrr-jvm</name>
+    <url>https://github.com/trex-paxos/uvrr-jvm</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -18,9 +18,9 @@
     <description>This is an implementation of the Paxos Logarithm as written in Paxos Made Simple by Leslie Lamport
     </description>
     <modules>
-        <module>trex-lib</module>
-        <!-- <module>trex-locks</module> -->
-        <module>trex-paxe</module>
+        <module>uvrr-lib</module>
+        <!-- <module>uvrr-locks</module> -->
+        <module>uvrr-paxe</module>
     </modules>
     <dependencies>
         <dependency>

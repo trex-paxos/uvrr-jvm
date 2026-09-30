@@ -3,18 +3,18 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>trex-locks</artifactId>
+    <artifactId>uvrr-locks</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>trex-locks</name>
-    <url>https://github.com/trex-paxos/trex-paxos-jvm</url>
+    <name>uvrr-locks</name>
+    <url>https://github.com/trex-paxos/uvrr-jvm</url>
     <description>
         Advisory locks are application-level locks that allow developers to coordinate access to shared resources across
         multiple database sessions. They are explicitly controlled by the application code, unlike standard database
         locks
     </description>
     <parent>
-        <groupId>com.github.trex-paxos</groupId>
-        <artifactId>trex</artifactId>
+        <groupId>uvrr-jvm</groupId>
+        <artifactId>uvrr-jvm</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -31,8 +31,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.trex-paxos</groupId>
-            <artifactId>trex-lib</artifactId>
+            <groupId>uvrr-jvm</groupId>
+            <artifactId>uvrr-lib</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
