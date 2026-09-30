@@ -160,7 +160,7 @@ For detailed algorithm explanation and implementation notes, see the comprehensi
 ### Copyright Notice
 All new Java files must include the following SPDX header at the top:
 ```java
-// SPDX-FileCopyrightText: 2024 - 2025 [Your Name]
+// SPDX-FileCopyrightText: 2024 - 2026 [Your Name]
 // SPDX-License-Identifier: Apache-2.0
 ```
 

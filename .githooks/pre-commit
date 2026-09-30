@@ -27,7 +27,7 @@ if [ $MISSING_HEADERS -ne 0 ]; then
     echo "Please add the SPDX copyright header to the above files."
     echo "Header template (copy from banner.txt):"
     cat << 'EOF'
-// SPDX-FileCopyrightText: 2024 - 2025 [Your Name]
+// SPDX-FileCopyrightText: 2024 - 2026 [Your Name]
 // SPDX-License-Identifier: Apache-2.0
 EOF
     exit 1

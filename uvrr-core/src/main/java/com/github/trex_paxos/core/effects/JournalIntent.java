@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 - 2025 Simon Massey
+// SPDX-FileCopyrightText: 2024 - 2026 Simon Massey
 // SPDX-License-Identifier: Apache-2.0
 
 package com.github.trex_paxos.core.effects;
