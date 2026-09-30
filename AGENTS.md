@@ -23,6 +23,36 @@ No instruction conflicts with Andon; if one appears to, Andon wins.
 ## Project Description
 uvrr-jvm is a Java library implementing the Paxos consensus algorithm for distributed systems. It provides strong consistency for cluster replication on the JVM, based on Leslie Lamport's "Paxos Made Simple" paper with optional Flexible Paxos support. The library prioritizes safety over availability, preferring to mark nodes as crashed rather than risk safety violations.
 
+## Build Identity
+
+| Fact | Value |
+| --- | --- |
+| Repository | https://github.com/trex-paxos/uvrr-jvm |
+| Maven groupId (root and all modules) | `uvrr-jvm` |
+| Modules | `uvrr-lib` (jar), `uvrr-paxe` (jar) |
+| Version | `1.0-SNAPSHOT` |
+| Java release | 25, enforced with `-Werror` |
+
+Deliberately NOT renamed, and consistent with each other:
+
+- The Java package is `com.github.trex_paxos`. Renaming it rewrites every source file, so it
+  belongs to the UVRR pivot, not to a metadata change. The jacoco include in `uvrr-paxe/pom.xml`
+  (`com/github/trex_paxos/**`) filters on that package and MUST move with it.
+- Type names keep the `Trex`/`Paxos` prefix: `TrexNode`, `TrexEngine`, `TrexService`,
+  `TrexMessage`, `TrexLogger`, `TrexResult`, `PaxosMessage`, `TrexRole`, and the `paxe` package
+  holding the PAXE protocol.
+- The `github.com/trex-paxos` org segment in the four pom `<url>` values and the git remote is
+  where the repository actually lives today.
+
+Two facts a future agent must not rediscover the hard way:
+
+1. `groupId` `uvrr-jvm` is a local coordinate, NOT a publishable one. Maven Central requires a
+   verified domain or `io.github.<account>` for an owned account. Set the final groupId when the
+   repository leaves the `trex-paxos` org, and before any release.
+2. A local stash survives on some checkouts (`00cf260a`). Its only content is
+   `maven.compiler.release` 24 to 25 plus the removal of `--enable-preview`, all of which is
+   already in `main`. Never apply it: it would revert the pom to the old `trex-paxos` coordinates.
+
 ## File Structure Overview
 ```
 uvrr-jvm/
@@ -135,7 +165,9 @@ All new Java files must include the following SPDX header at the top:
 ```
 
 ### File Linking (agents.md compatibility)
-This repository uses the agents.md format for documentation. The `.openhands/microagents/repo.md` file is symlinked to the main `AGENTS.md` for forward compatibility with upcoming OpenHands agents.md support.
+This repository uses the agents.md format for documentation: `AGENTS.md` at the root, plus
+`uvrr-lib/AGENTS.md` and `uvrr-paxe/AGENTS.md` per module. There is no `.openhands/` tree; the
+`.gitignore` entry for it is not to be mistaken for a tracked mirror of this file.
 
 ### Setup Development Environment
 ```bash
