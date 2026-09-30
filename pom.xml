@@ -20,6 +20,7 @@
     <modules>
         <module>uvrr-lib</module>
         <module>uvrr-paxe</module>
+        <module>uvrr-core</module>
     </modules>
     <dependencies>
         <dependency>
