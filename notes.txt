@@ -35,7 +35,7 @@ clear ; mvn test -pl uvrr-paxe -Dtest=com.github.trex_paxos.paxe.PaxeNetworkTest
 
 # jshell
 
-jshell --enable-preview --class-path ./uvrr-locks/target/classes:./uvrr-locks/target/test-classes:./uvrr-lib/target/classes:./uvrr-lib/target/test-classes
+jshell --enable-preview --class-path ./uvrr-lib/target/classes:./uvrr-lib/target/test-classes
 
 ```
 jshell> import com.github.trex_paxos.*

@@ -19,7 +19,6 @@
     </description>
     <modules>
         <module>uvrr-lib</module>
-        <!-- <module>uvrr-locks</module> -->
         <module>uvrr-paxe</module>
     </modules>
     <dependencies>
