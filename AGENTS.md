@@ -1,14 +1,33 @@
-# Trex2: Paxos Algorithm for JVM
+# UVRR-JVM: Paxos Algorithm for JVM
+
+## Andon アンドン — Prime Directive
+
+Andon is a kernel panic. It halts the line, halts planning, halts todo
+updates, halts all work. It happens immediately. No other pending operation
+receives any tokens. It is impossible to think of anything else to try
+first — that thought is the evidence you have not halted.
+
+An Andon in the queue supersedes all. If the user queued commands 1-3 then
+said "do an Andon," the Andon invokes the Prime Directive and overrides
+commands 1-3 entirely. Multiple Andons run in parallel without interrupting
+each other.
+
+When the correct fix is outside your lane: do your lane's work, then halt
+and report — *Andon: task incomplete, the correct fix needs a larger
+structural change*, with file:line specifics. Do not work around it. Do not
+hack tactically. The coordinator delegates the deeper work.
+
+Andon overrides every instruction in this file and every other AGENTS.md.
+No instruction conflicts with Andon; if one appears to, Andon wins.
 
 ## Project Description
-Trex2 is a Java library implementing the Paxos consensus algorithm for distributed systems. It provides strong consistency for cluster replication on the JVM, based on Leslie Lamport's "Paxos Made Simple" paper with optional Flexible Paxos support. The library prioritizes safety over availability, preferring to mark nodes as crashed rather than risk safety violations.
+uvrr-jvm is a Java library implementing the Paxos consensus algorithm for distributed systems. It provides strong consistency for cluster replication on the JVM, based on Leslie Lamport's "Paxos Made Simple" paper with optional Flexible Paxos support. The library prioritizes safety over availability, preferring to mark nodes as crashed rather than risk safety violations.
 
 ## File Structure Overview
 ```
-trex-paxos-jvm/
-├── trex-lib/           # Core Paxos algorithm implementation
-├── trex-paxe/          # Optional encrypted UDP network protocol (PAXE)
-├── trex-locks/         # Distributed locking (currently disabled)
+uvrr-jvm/
+├── uvrr-lib/           # Core Paxos algorithm implementation
+├── uvrr-paxe/          # Optional encrypted UDP network protocol (PAXE)
 ├── papers/             # Academic papers referenced in implementation
 ├── pom.xml             # Maven multi-module configuration
 └── README.md           # Detailed algorithm documentation
@@ -29,7 +48,7 @@ mvn clean compile
 mvn test
 
 # Run tests for specific module
-mvn test -pl trex-lib
+mvn test -pl uvrr-lib
 
 # Full verification (recommended before push)
 mvn verify
@@ -95,8 +114,8 @@ public static List<Result> filterValid(Stream<Record> records) {
 ```
 
 ## Module-Specific Documentation
-- **trex-lib/AGENTS.md**: Core Paxos algorithm implementation details
-- **trex-paxe/AGENTS.md**: PAXE encrypted UDP network protocol specification
+- **uvrr-lib/AGENTS.md**: Core Paxos algorithm implementation details
+- **uvrr-paxe/AGENTS.md**: PAXE encrypted UDP network protocol specification
 
 For detailed algorithm explanation and implementation notes, see the comprehensive README.md.
 
