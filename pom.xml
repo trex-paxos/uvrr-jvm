@@ -14,8 +14,23 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>25</maven.compiler.release>
         <jacoco.version>0.8.15</jacoco.version>
+        <!--
+        The JSON API is a backport of the OpenJDK jdk-sandbox java.util.json feature,
+        published as io.github.simbo1905.json:java.util.json: forty-four kilobytes, no
+        transitive runtime dependencies, no module-info, so it loads on the plain
+        classpath with no module flags.
+
+        It is declared here for version alignment only. Nothing that ships depends on
+        it: the dependency itself lives in uvrr-core's `compat` profile, at test scope,
+        because the only JSON in this repository speaks the Maelstrom wire protocol
+        and the Hurl suite's HTTP endpoints, and all of that is integration-test code.
+        The release artifacts - uvrr-lib, uvrr-paxe, uvrr-core - carry no JSON.
+        -->
+        <json.version>2026.08.31</json.version>
     </properties>
-    <description>This is an implementation of the Paxos Logarithm as written in Paxos Made Simple by Leslie Lamport
+    <description>uVRR: viewstamped replication for strong consistency in cluster replication on the JVM,
+    following Viewstamped Replication Revisited (Liskov, Cowling et al) with eras, weighted quorums
+    and incarnation reincarnation.
     </description>
     <modules>
         <module>uvrr-lib</module>
@@ -57,6 +72,15 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.simbo1905.json</groupId>
+                <artifactId>java.util.json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

@@ -1,4 +1,4 @@
-# UVRR-JVM: Paxos Algorithm for JVM
+# UVRR-JVM: viewstamped replication for the JVM
 
 ## Andon アンドン — Prime Directive
 
@@ -21,7 +21,20 @@ Andon overrides every instruction in this file and every other AGENTS.md.
 No instruction conflicts with Andon; if one appears to, Andon wins.
 
 ## Project Description
-uvrr-jvm is a Java library implementing the Paxos consensus algorithm for distributed systems. It provides strong consistency for cluster replication on the JVM, based on Leslie Lamport's "Paxos Made Simple" paper with optional Flexible Paxos support. The library prioritizes safety over availability, preferring to mark nodes as crashed rather than risk safety violations.
+uvrr-jvm is a Java library implementing **uVRR**, the viewstamped replication protocol of *Viewstamped
+Replication Revisited* (Liskov, Cowling, Schneider, Woodruff et al), ported from the Rust reference at
+`github.com/lua-lunet/uvrr-core`, which is normative for both the protocol and the wire format. uVRR adds
+eras, weighted quorums, fused-batch reconfiguration and incarnation reincarnation to the primary-backup
+core. The library prioritizes safety over availability, preferring to mark nodes as crashed rather than
+risk safety violations.
+
+`uvrr-lib` is the earlier Paxos implementation, being retired. It still ships and still builds, so its
+documentation is retained and its algorithm prose still says Paxos, correctly, of that code.
+
+**A project-level description says uVRR. It does not say Paxos, and it does not say "Paxos Made Simple".**
+That phrase names the wrong formalism for this repository and an agent repeating it in a pom description,
+a README title or an agents.md header is doing an identity rename badly. Algorithm prose inside the
+`uvrr-lib` sections is a different matter: it documents Paxos code, so it stays.
 
 ## Build Identity
 
@@ -56,9 +69,10 @@ Two facts a future agent must not rediscover the hard way:
 ## File Structure Overview
 ```
 uvrr-jvm/
-├── uvrr-lib/           # Core Paxos algorithm implementation
+├── uvrr-lib/           # The retiring Paxos implementation
 ├── uvrr-paxe/          # Optional encrypted UDP network protocol (PAXE)
-├── uvrr-core/          # uVRR protocol core, ported from the Rust uvrr-core
+├── uvrr-core/          # uVRR protocol core, ported from the Rust uvrr-core (the deliverable)
+├── spec-uvrr-core/     # Git submodule: the Rust reference, pinned; never edited
 ├── papers/             # Academic papers referenced in implementation
 ├── pom.xml             # Maven multi-module configuration
 └── README.md           # Detailed algorithm documentation
@@ -99,6 +113,9 @@ sdk install mvnd
 
 ### Key Test Categories
 - **Property Tests**: JQwik-based exhaustive testing of algorithm invariants
+- **Conformance Gate**: `mvn -Pcompat verify` replays the Rust reference's 73-case compliance corpus
+  through a Hurl suite over the loopback transport it defines. The release gate; a plain `mvn verify`
+  is the slim build and does not compile that suite at all.
 - **Simulation Tests**: 1,000+ randomized network partition scenarios
 - **Unit Tests**: Core functionality validation
 
@@ -145,7 +162,7 @@ public static List<Result> filterValid(Stream<Record> records) {
 ```
 
 ## Module-Specific Documentation
-- **uvrr-lib/AGENTS.md**: Core Paxos algorithm implementation details
+- **uvrr-lib/AGENTS.md**: The retiring Paxos implementation's details
 - **uvrr-paxe/AGENTS.md**: PAXE encrypted UDP network protocol specification
 - **uvrr-core/AGENTS.md**: uVRR protocol core, its Rust source of truth, and its compliance duty
 

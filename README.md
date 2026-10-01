@@ -1,9 +1,21 @@
-## UVRR-JVM: Paxos Algorithm Strong consistency for cluster replication on the Java JVM
+## UVRR-JVM: viewstamped replication for strong consistency in cluster replication on the Java JVM
 
 ### TL;DR
 
-This repository contains a Java library that implements the Paxos algorithm as described in Leslie Lamport's 2001
-paper [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) that optionally supports [Flexible Paxos: Quorum intersection revisited](https://arxiv.org/pdf/1608.06696v1). 
+This repository contains a Java library implementing **uVRR**, the viewstamped replication protocol of
+*Viewstamped Replication Revisited* (Liskov, Cowling, Schneider, Woodruff et al), ported from the Rust
+reference at [lua-lunet/uvrr-core](https://github.com/lua-lunet/uvrr-core), which is normative for the
+protocol and for the wire format. uVRR adds eras, weighted quorums, fused-batch reconfiguration and
+incarnation reincarnation on top of the primary-backup core, and it is safety-first: it prefers to mark
+a node as crashed over ignoring a possible safety violation.
+
+The protocol core lives in `uvrr-core`, a sans-I/O module that has no runtime dependencies: it consumes
+one input and returns a list of effects, and the host owns time, transport, storage and packetization.
+
+The repository also still contains `uvrr-lib`, the earlier Paxos implementation, which is being retired.
+Its algorithm documentation is retained below under *The retiring implementation*, because it documents
+code that still ships in this repository.
+
 This implementation aims to be rigorous in terms of safety preferring to mark a node as crashed rather than ignoring any possible safety violation.
 The core library has brute force property tests that check all branches and all input permutations to confirm the algorithm invariants are never violated.
 
@@ -30,10 +42,11 @@ At this the time:
 2. There are runtime checks that the algorithm is never violated.
 3. The library will mark itself as crashed if it spots problems such a journal write errors.
 4. There are junit tests that simulate randomized rolling network partitions 1,000 times.
-5. There is support for Flexible Paxos quorum strategies.
+5. The uVRR core is gated against the Rust reference's 73-case compliance corpus, driven by a Hurl suite
+   over the loopback transport the reference defines.
 
 This repository includes a low-overhead UDP based encrypted network protocol inspired by QUIC called [PAXE](./uvrr-paxe/README.md).
-This can be optionally be embedded into your application to perform the Paxos message enchanges.
+This can be optionally be embedded into your application to perform the protocol message exchanges.
 
 See the Architecture section for a more detailed explanation of how to use the library.
 
@@ -41,11 +54,11 @@ See the Architecture section for a more detailed explanation of how to use the l
 
 The ambition of this documentation is to:
 
-1. Provide sufficient detail about the invariants described in the original paper to transcribe them into rigorous
+1. Provide sufficient detail about the invariants described in the original papers to transcribe them into rigorous
    tests.
 2. Clarify that the approach taken in this implementation is based on a careful and thorough reading of the original
-   papers, watching Lamport's videos, and careful research of other implementations.
-3. Provide sufficient detail around the "learning" messages used by this implementation to understand that they are
+   papers and careful research of other implementations.
+3. Provide sufficient detail around the protocol messages used by this implementation to understand that they are
    minimal and do not harm correctness.
 4. Provide enough documentation so that someone can carefully study the code, the tests, and the papers to verify this
    implementation with far less overall effort than it would take them to write any equivalent implementation.
@@ -54,7 +67,13 @@ The ambition of this documentation is to:
 The description below refers to server processes as "nodes" within a cluster. This helps to disambiguate the library code
 running the algorithm from the physical server or host process. 
 
-## The Problem We're Solving
+## The retiring implementation: uvrr-lib (Paxos)
+
+Everything below documents `uvrr-lib`, the Paxos implementation uVRR replaces. It is retained because
+that code still ships and still builds. For `uvrr-core` see `uvrr-core/AGENTS.md` and the Rust
+reference, which is normative.
+
+### The Problem We're Solving
 
 Imagine you have multiple servers that need critical configuration to be consistent across them all.
 Configuration such as:
@@ -539,14 +558,14 @@ graph LR
 
 The list of tasks:
 
-- [x] Implement the Paxos Parliament Protocol for log replication.
+- [x] Implement the Paxos Parliament Protocol for log replication (uvrr-lib, retiring).
 - [x] Write a test harness that injects rolling network partitions.
 - [x] Write property-based tests exhaustively to verify correctness.
 - [x] Write extensive documentation, including detailed JavaDoc.
 - [x] Write a `Network` for a demo. Kwik does not support connection fail-over. So will make something QUIC-like over
   UDP.
-- [x] Implement Voting Weights for Flexible Paxos.
-- [ ] Implement cluster membership changes as UPaxos.
+- [x] Implement Voting Weights for Flexible Paxos (uvrr-lib, retiring).
+- [ ] Implement cluster membership changes as UPaxos (superseded: uVRR fuses the schedule).
 - [ ] Implement corfu distributed shared log as a full demo.
 - [ ] Add in phi accumulator for leader failure detection.
 

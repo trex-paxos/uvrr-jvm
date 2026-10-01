@@ -1,8 +1,13 @@
 
-# UVRR-Lib: Core Paxos Algorithm
+# UVRR-Lib: the retiring Paxos implementation
 
 ## Overview
-Core implementation of the Paxos consensus algorithm with exhaustive property testing. Provides the fundamental building blocks for distributed consensus without network transport.
+The earlier implementation of the Paxos consensus algorithm, with exhaustive property testing. uVRR
+replaces it: see `uvrr-core/AGENTS.md` and the Rust reference at `github.com/lua-lunet/uvrr-core`, which
+is normative. Everything in this file describes the Paxos code that still ships here and is on its way
+out, so its algorithm prose says Paxos, correctly.
+
+The fundamental building blocks for distributed consensus, without network transport.
 
 ## Key Components
 
