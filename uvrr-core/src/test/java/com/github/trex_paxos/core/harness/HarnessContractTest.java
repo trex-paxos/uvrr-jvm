@@ -92,15 +92,19 @@ class HarnessContractTest {
         var primary = primaryOf(viaQueue);
         assertTrue(primary.isPresent(), "a settled 3-node cluster has a primary");
 
-        // The datagram the primary emitted while settling, re-injected to the
-        // same node: inject must reach the node through the same plan/publish
-        // path, so the trace line differs only in its summary.
-        var emitted = viaQueue.queuedFor(viaQueue.roster().get(1)).stream().findFirst();
-        assertTrue(emitted.isPresent(), "the settling round left a datagram queued");
+        // A datagram the primary itself emits, fed to a backup two ways: once
+        // through the queue and once by `inject`. Both must be one step through
+        // the same plan/publish path, so the outcomes must agree.
+        var sender = primary.get();
+        var backup = viaQueue.roster().stream().filter(id -> !id.equals(sender)).findFirst().orElseThrow();
+        var queuedRun = settled(3);
+        queuedRun.propose(sender, "force-feed".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        var staged = queuedRun.queuedFor(backup).stream().findFirst();
+        assertTrue(staged.isPresent(), "the primary's proposal left a datagram queued for the backup");
 
         var fresh = settled(3);
         var before = fresh.stepTrace().size();
-        fresh.inject(primary.get(), fresh.roster().get(1), emitted.get().message());
+        fresh.inject(sender, backup, staged.get().message());
         var after = fresh.stepTrace().subList(before, fresh.stepTrace().size());
         assertEquals(1, after.size(), "one inject is exactly one step");
         assertTrue(after.getFirst().contains("inject"),
@@ -152,10 +156,12 @@ class HarnessContractTest {
         assertTrue(harness.heldLen() > 0, "the cross traffic is held, not dropped");
 
         var held = harness.heldLen();
-        harness.heal();
-        harness.deliverAll();
-        assertEquals(0, harness.heldLen(), "heal drains what now flows");
         assertTrue(held > 0, "the held count was the evidence the traffic existed");
+        assertEquals(held, harness.heal(), "heal requeues every held datagram");
+        assertEquals(0, harness.heldLen(), "nothing is held once the partition is lifted");
+        assertTrue(harness.queuedLen() >= held, "the requeued traffic is deliverable again");
+        harness.deliverAll();
+        assertEquals(0, harness.queuedLen(), "the drain empties the queue");
     }
 
     @Test
@@ -182,13 +188,23 @@ class HarnessContractTest {
         harness.crash(victim);
         assertTrue(!harness.isUp(victim), "the crash took the node down");
 
+        // Any well-formed same-view message will do: the point is that the host
+        // records the attempt against a node it cannot reach.
+        var message = new com.github.trex_paxos.core.message.Message(
+                new com.github.trex_paxos.core.wire.Header(
+                        com.github.trex_paxos.core.wire.Tag.COMMIT,
+                        new com.github.trex_paxos.core.ids.Ballot(
+                                new com.github.trex_paxos.core.ids.Era(1),
+                                com.github.trex_paxos.core.ids.View.INITIAL),
+                        new com.github.trex_paxos.core.ids.Slot(2)),
+                new com.github.trex_paxos.core.message.Body.Commit(new com.github.trex_paxos.core.ids.Slot(2)));
+        // Through the transport, not by force-feed: only a delivery is counted.
         var before = harness.undeliverableCount();
-        harness.inject(identity(1), victim, harness.queuedFor(identity(2)).stream()
-                .findFirst()
-                .orElseThrow()
-                .message());
+        harness.send(identity(1), victim, message);
+        harness.deliverAll();
         assertEquals(before + 1, harness.undeliverableCount(),
                 "a delivery to a down node stays named and counted");
+        assertEquals(0, harness.queuedLen(), "the datagram left the queue either way");
     }
 
     @Test
@@ -236,11 +252,10 @@ class HarnessContractTest {
             // The forced view was legal, so no fault was forced. The trace still
             // has to show the step ran.
             assertTrue(trace.contains("force-view"), "the step is traced: " + trace);
-            assertEquals(
-                    illegal instanceof Harness.StepOutcome.Published
+            assertTrue(illegal instanceof Harness.StepOutcome.PlanRefused
+                            || illegal instanceof Harness.StepOutcome.Published
                             || illegal instanceof Harness.StepOutcome.Parked
                             || illegal instanceof Harness.StepOutcome.PublishRefused,
-                    true,
                     "the outcome is a named variant either way: " + illegal);
         }
     }

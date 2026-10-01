@@ -930,9 +930,20 @@ public final class Harness {
         return new DeliveryOutcome(envelope.from(), envelope.to(), outcome);
     }
 
+    /// Enqueues one datagram as if the node had emitted it, without going
+    /// through a step. A script stages transport-level traffic with it; the
+    /// datagram is delivered, and counted, by the ordinary delivery path.
+    public boolean send(NodeId from, NodeId to, Message message) {
+        return network.route(new Network.Envelope(from, to,
+                new com.github.trex_paxos.core.ids.Era(1), message));
+    }
+
     /// Force-feeds a raw message to a node, bypassing the queues and the
     /// partition. `from` is the transport-attributed sender the core's guards
     /// and quorum counting see, so a fabrication names its claimed author.
+    ///
+    /// A force-feed is not a delivery and is not counted as one: it never
+    /// touched the transport. Undeliverable accounting belongs to `deliverAll`.
     public StepOutcome inject(NodeId from, NodeId id, Message message) {
         return drive(id,
                 "inject n" + id.value() + " from n" + from.value()

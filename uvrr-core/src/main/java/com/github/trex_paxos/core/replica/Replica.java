@@ -882,15 +882,48 @@ public final class Replica<J extends Journal, Q extends QuorumStrategy> {
             return dropPlan(new Diagnostic.ViewMismatch(header.view(), current), kind);
         }
 
+        // The member-gated bootstrap adoption (src/replica/normal.rs:697-724). A
+        // node in a fenced entry state adopts the view and enters Normal on a
+        // legitimate same-view message from that view's primary, gated on
+        // holding weight in the era's configuration. Without it a provisioned
+        // cluster never leaves genesis: the primary promotes and broadcasts, the
+        // backups take the frontier and stay fenced forever.
+        boolean bootFenced = isBootFenced();
+        if (progress.status() != Status.NORMAL && !bootFenced) {
+            return dropPlan(new Diagnostic.StatusGate(header.view(), current, progress.status()), kind);
+        }
+        Status status = adoptableInView(header.view()) ? Status.NORMAL : progress.status();
+
         Slot newCommitted = committed.compareTo(progress.accepted()) < 0 ? committed : progress.accepted();
-        if (newCommitted.compareTo(progress.committed()) <= 0) {
-            return dropPlan(new Diagnostic.None(), kind);
+        if (newCommitted.compareTo(progress.committed()) <= 0 && status == progress.status()) {
+            return candidatePlan(progress.withRevision(progress.revision() + 1),
+                    new JournalMutation.None(), List.of(), kind, false);
         }
 
-        Progress candidate = progress.withCommitted(newCommitted).withRevision(progress.revision() + 1);
+        Progress candidate = progress.withCommitted(newCommitted)
+                .withStatus(status)
+                .withRevision(progress.revision() + 1);
         List<Effect> effects = applyEffects(journal, progress.committed(), newCommitted);
 
         return candidatePlan(candidate, new JournalMutation.None(), effects, kind, false);
+    }
+
+    /// Whether this node sits in a fenced entry state with no view change
+    /// outstanding: `Restarting` or `Joining` with `current == retained`.
+    /// `src/replica/normal.rs:699-700`.
+    private boolean isBootFenced() {
+        return (progress.status() == Status.RESTARTING || progress.status() == Status.JOINING)
+                && progress.current().equals(progress.retained());
+    }
+
+    /// Whether this node holds weight in `view`'s configuration. The adoption
+    /// is member-gated: a boot-fenced standby outside every configuration it can
+    /// name takes the frontier the stream carries and stays fenced, never
+    /// adopting a view. `src/replica/normal.rs:716-718`.
+    private boolean adoptableInView(Ballot view) {
+        return progress.config().record(view.era())
+                .flatMap(record -> record.config().weightOf(own))
+                .isPresent();
     }
 
     private PlannedTransition planPeerStartViewChange(

@@ -82,24 +82,16 @@ final class Network {
         return Optional.empty();
     }
 
-    /// Moves every held datagram back onto the queue, preserving held order
-    /// behind whatever the queue already holds.
+    /// Lifts the partition and requeues the held datagrams, in the order they
+    /// were held. Every held datagram is requeued, not only those that now
+    /// flow: with the partition gone there is nothing left to hold.
     int heal() {
-        if (partition == null) {
-            return 0;
+        partition = null;
+        int released = held.size();
+        for (var envelope : held) {
+            queue.addLast(envelope);
         }
-        int released = 0;
-        for (var it = held.iterator(); it.hasNext(); ) {
-            var envelope = it.next();
-            if (!partition.crosses(envelope.from(), envelope.to())) {
-                queue.addLast(envelope);
-                it.remove();
-                released++;
-            }
-        }
-        if (held.isEmpty()) {
-            partition = null;
-        }
+        held.clear();
         return released;
     }
 
