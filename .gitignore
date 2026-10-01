@@ -2,7 +2,6 @@
 .jqwik-database
 .metals/
 target/
-trex2-lib/target/
 .idea/
 */.jqwik-database
 **/output.log
@@ -15,3 +14,13 @@ repomix*
 output*.log
 
 .openhands/
+
+# Machine-local IDE state. The Eclipse JDT language server (jdt.ls) writes
+# these into every module directory; they are workspace metadata, never
+# build inputs, and they carry the pre-rename module paths.
+.project
+.classpath
+.factorypath
+.settings/
+.tmp/
+.tmp/

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>uvrr-core</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>uvrr-core</name>
+    <url>https://github.com/trex-paxos/uvrr-jvm</url>
+    <parent>
+        <groupId>uvrr-jvm</groupId>
+        <artifactId>uvrr-jvm</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <version>1.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+        </plugins>
+    </build>
+    <!--
+    The `compat` profile is the kitchen sink, and it is a gate rather than an
+    artifact.
+
+    Everything it adds lives under src/it/java and is named *IT.java: the Maelstrom
+    client and the Hurl suite that drives the conformance endpoints over loopback
+    HTTP. None of it is packaged, and none of it can reach a release. A plain
+    `mvn verify` does not even see the source root, so the slim build cannot
+    accidentally compile the harness or pull in JSON.
+
+    A release is two steps, in this order:
+      1. mvn -B -Pcompat verify   the full conformance gate. If it fails, no release.
+      2. mvn -B verify            the slim build that produces the released jars.
+
+    The transport is com.sun.net.httpserver, from the JDK: no Netty, no Tomcat, no
+    container. The JSON is the java.util.json backport, at test scope.
+    -->
+    <profiles>
+        <profile>
+            <id>compat</id>
+            <dependencies>
+                <dependency>
+                    <groupId>io.github.simbo1905.json</groupId>
+                    <artifactId>java.util.json</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <!-- src/it/java is an extra test source root: the default lifecycle
+                         knows only src/main/java and src/test/java. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.2</version>
+                        <executions>
+                            <execution>
+                                <id>add-integration-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/it/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Failsafe runs *IT at integration-test and checks the result at
+                         verify, so teardown still runs when a case fails and the build
+                         fails at the end rather than mid-cascade. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <!-- The Rust reference is a submodule. The corpus and the
+                                     Hurl suite live inside it and are never edited here. -->
+                                <uvrr.spec.dir>${project.basedir}/../spec-uvrr-core</uvrr.spec.dir>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

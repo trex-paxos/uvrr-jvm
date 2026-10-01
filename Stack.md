@@ -9,7 +9,7 @@ mvn -DNO_LOGGING=true clean test
 Run jshell with:
 
 ```bash
-jshell --enable-preview --class-path ./trex-lib/target/classes:./trex-lib/target/test-classes:./trex-paxe/target/classes:./trex-paxe/target/test-classes
+jshell --enable-preview --class-path ./uvrr-lib/target/classes:./uvrr-lib/target/test-classes:./uvrr-paxe/target/classes:./uvrr-paxe/target/test-classes
 ```
 
 To exit press Ctrl+d

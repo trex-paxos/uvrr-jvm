@@ -3,24 +3,38 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.trex-paxos</groupId>
-    <artifactId>trex</artifactId>
+    <groupId>uvrr-jvm</groupId>
+    <artifactId>uvrr-jvm</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>trex</name>
-    <url>https://github.com/trex-paxos/trex-paxos-jvm</url>
+    <name>uvrr-jvm</name>
+    <url>https://github.com/trex-paxos/uvrr-jvm</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>25</maven.compiler.release>
         <jacoco.version>0.8.15</jacoco.version>
+        <!--
+        The JSON API is a backport of the OpenJDK jdk-sandbox java.util.json feature,
+        published as io.github.simbo1905.json:java.util.json: forty-four kilobytes, no
+        transitive runtime dependencies, no module-info, so it loads on the plain
+        classpath with no module flags.
+
+        It is declared here for version alignment only. Nothing that ships depends on
+        it: the dependency itself lives in uvrr-core's `compat` profile, at test scope,
+        because the only JSON in this repository speaks the Maelstrom wire protocol
+        and the Hurl suite's HTTP endpoints, and all of that is integration-test code.
+        The release artifacts - uvrr-lib and uvrr-core - carry no JSON.
+        -->
+        <json.version>2026.08.31</json.version>
     </properties>
-    <description>This is an implementation of the Paxos Logarithm as written in Paxos Made Simple by Leslie Lamport
+    <description>uVRR: viewstamped replication for strong consistency in cluster replication on the JVM,
+    following Viewstamped Replication Revisited (Liskov, Cowling et al) with eras, weighted quorums
+    and incarnation reincarnation.
     </description>
     <modules>
-        <module>trex-lib</module>
-        <!-- <module>trex-locks</module> -->
-        <module>trex-paxe</module>
+        <module>uvrr-lib</module>
+        <module>uvrr-core</module>
     </modules>
     <dependencies>
         <dependency>
@@ -57,6 +71,15 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.simbo1905.json</groupId>
+                <artifactId>java.util.json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

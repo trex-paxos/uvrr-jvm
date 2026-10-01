@@ -1,0 +1,4 @@
+[submodule "uvrr-core/src/test/resources/uvrr-core-spec"]
+	path = spec-uvrr-core
+	url = git@github.com:lua-lunet/uvrr-core.git
+	branch = main
