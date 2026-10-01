@@ -24,7 +24,7 @@
         it: the dependency itself lives in uvrr-core's `compat` profile, at test scope,
         because the only JSON in this repository speaks the Maelstrom wire protocol
         and the Hurl suite's HTTP endpoints, and all of that is integration-test code.
-        The release artifacts - uvrr-lib, uvrr-paxe, uvrr-core - carry no JSON.
+        The release artifacts - uvrr-lib and uvrr-core - carry no JSON.
         -->
         <json.version>2026.08.31</json.version>
     </properties>
@@ -34,7 +34,6 @@
     </description>
     <modules>
         <module>uvrr-lib</module>
-        <module>uvrr-paxe</module>
         <module>uvrr-core</module>
     </modules>
     <dependencies>

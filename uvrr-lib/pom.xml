@@ -14,6 +14,26 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <dependencies>
+        <!--
+        PAXE is its own repository now (io.github.simbo1905:paxe-jvm), a standalone
+        datagram-encryption transport that depends on no consensus library. This is
+        test scope: it exists so the integration tests can prove a real consensus
+        cluster runs over a real encrypted transport. uvrr-lib's main sources do not
+        touch it, and the library ships without it.
+        -->
+        <dependency>
+            <groupId>io.github.simbo1905</groupId>
+            <artifactId>paxe-jvm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- The MVStore-backed demo admin the integration tests drive. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2-mvstore</artifactId>
+            <version>2.3.232</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.jqwik</groupId>
             <artifactId>jqwik</artifactId>

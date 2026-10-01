@@ -34,7 +34,7 @@ To use this library:
 * At this time you will need to set up the cluster membership manually. You will need to assign a unique node identifier
   to each node in the cluster.
 * This library is designed to be transport agnostic when passing protocol messages between nodes in the cluster. You can 
-  use your own application messaging layer (e.g. REST or gRPC). There is an optional encrypted UDP network protocol in this repository. 
+  use your own application messaging layer (e.g. REST or gRPC). There is an optional encrypted UDP network protocol, PAXE, in its own repository. 
 
 At this the time:
 
@@ -45,8 +45,9 @@ At this the time:
 5. The uVRR core is gated against the Rust reference's 73-case compliance corpus, driven by a Hurl suite
    over the loopback transport the reference defines.
 
-This repository includes a low-overhead UDP based encrypted network protocol inspired by QUIC called [PAXE](./uvrr-paxe/README.md).
-This can be optionally be embedded into your application to perform the protocol message exchanges.
+Datagram encryption is a separate library now: [PAXE](https://github.com/trex-paxos/paxe-jvm), a
+standalone transport with no dependency on any consensus protocol, mirroring the Rust reference at
+[lua-lunet/paxe-core](https://github.com/lua-lunet/paxe-core).
 
 See the Architecture section for a more detailed explanation of how to use the library.
 

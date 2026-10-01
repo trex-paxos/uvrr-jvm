@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2024 - 2026 Simon Massey
 // SPDX-License-Identifier: Apache-2.0
-package com.github.trex_paxos.paxe;
+package com.github.trex_paxos.integration;
 
 import com.github.trex_paxos.*;
+import com.github.trex_paxos.network.NetworkLayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PaxeStackClusterTest {
 
-  private NetworkTestHarness harness;
+  private PaxeClusterHarness harness;
   StackServiceImpl stackService1;
   StackServiceImpl stackService2;
 
@@ -37,10 +38,10 @@ class PaxeStackClusterTest {
   @BeforeEach
   void setup() throws Exception {
     LOGGER.fine("Setting up test harness");
-    harness = new NetworkTestHarness();
+    harness = new PaxeClusterHarness();
 
-    NetworkWithTempPort network1 = harness.createNetwork((short) 1);
-    NetworkWithTempPort network2 = harness.createNetwork((short) 2);
+    NetworkLayer network1 = harness.createTransport((short) 1);
+    NetworkLayer network2 = harness.createTransport((short) 2);
 
     Supplier<Legislators> members = () -> Legislators.of(
         new VotingWeight(new NodeId((short) 1), 1),
@@ -48,8 +49,8 @@ class PaxeStackClusterTest {
     );
 
     // Subscribe handlers before starting UDP receivers (StackServiceImpl starts the network).
-    stackService1 = new StackServiceImpl((short)1, members, network1.network());
-    stackService2 = new StackServiceImpl((short)2, members, network2.network());
+    stackService1 = new StackServiceImpl((short)1, members, network1);
+    stackService2 = new StackServiceImpl((short)2, members, network2);
 
     LOGGER.fine("Stack services started");
 

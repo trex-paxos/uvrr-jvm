@@ -42,14 +42,14 @@ a README title or an agents.md header is doing an identity rename badly. Algorit
 | --- | --- |
 | Repository | https://github.com/trex-paxos/uvrr-jvm |
 | Maven groupId (root and all modules) | `uvrr-jvm` |
-| Modules | `uvrr-lib` (jar), `uvrr-paxe` (jar), `uvrr-core` (jar) |
+| Modules | `uvrr-lib` (jar), `uvrr-core` (jar) |
 | Version | `1.0-SNAPSHOT` |
 | Java release | 25, enforced with `-Werror` |
 
 Deliberately NOT renamed, and consistent with each other:
 
 - The Java package is `com.github.trex_paxos`. Renaming it rewrites every source file, so it
-  belongs to the UVRR pivot, not to a metadata change. The jacoco include in `uvrr-paxe/pom.xml`
+  belongs to the UVRR pivot, not to a metadata change. The jacoco include
   (`com/github/trex_paxos/**`) filters on that package and MUST move with it.
 - Type names keep the `Trex`/`Paxos` prefix: `TrexNode`, `TrexEngine`, `TrexService`,
   `TrexMessage`, `TrexLogger`, `TrexResult`, `PaxosMessage`, `TrexRole`, and the `paxe` package
@@ -70,7 +70,6 @@ Two facts a future agent must not rediscover the hard way:
 ```
 uvrr-jvm/
 ├── uvrr-lib/           # The retiring Paxos implementation
-├── uvrr-paxe/          # Optional encrypted UDP network protocol (PAXE)
 ├── uvrr-core/          # uVRR protocol core, ported from the Rust uvrr-core (the deliverable)
 ├── spec-uvrr-core/     # Git submodule: the Rust reference, pinned; never edited
 ├── papers/             # Academic papers referenced in implementation
@@ -163,7 +162,6 @@ public static List<Result> filterValid(Stream<Record> records) {
 
 ## Module-Specific Documentation
 - **uvrr-lib/AGENTS.md**: The retiring Paxos implementation's details
-- **uvrr-paxe/AGENTS.md**: PAXE encrypted UDP network protocol specification
 - **uvrr-core/AGENTS.md**: uVRR protocol core, its Rust source of truth, and its compliance duty
 
 For detailed algorithm explanation and implementation notes, see the comprehensive README.md.
@@ -185,7 +183,7 @@ All new Java files must include the following SPDX header at the top:
 
 ### File Linking (agents.md compatibility)
 This repository uses the agents.md format for documentation: `AGENTS.md` at the root, plus
-`uvrr-lib/AGENTS.md`, `uvrr-paxe/AGENTS.md` and `uvrr-core/AGENTS.md` per module. There is no
+`uvrr-lib/AGENTS.md` and `uvrr-core/AGENTS.md` per module. There is no
 `.openhands/` tree; the `.gitignore` entry for it is not to be mistaken for a tracked mirror of
 this file.
 
